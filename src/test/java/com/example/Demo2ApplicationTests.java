@@ -19,7 +19,7 @@ class Demo2ApplicationTests {
     void contextLoads() {
         QueryWrapper <Invoice> qw = new QueryWrapper <>( );
         qw.like("username", "niuniu");
-        List <Invoice> invoices = invoiceMapper.selectList( null );
+        List <Invoice> invoices = invoiceMapper.selectList( qw );
 
         System.out.println(invoices );
     }
@@ -54,6 +54,7 @@ class Demo2ApplicationTests {
     private InvoiceService invoiceService;
 @Test
     void testServiceSelectall(){
+
 
         System.out.println(invoiceService.getAll() );
     }

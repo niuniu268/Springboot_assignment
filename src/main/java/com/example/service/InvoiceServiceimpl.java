@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.InvoiceMapper;
 import com.example.domain.Invoice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,17 @@ public class InvoiceServiceimpl implements InvoiceService{
 
     @Override
     public List <Invoice> getAll() {
+
         return invoiceMapper.selectList( null );
     }
 
     @Override
-    public Boolean getByConditional(Invoice invoice) {
+    public List<Invoice> getByConditional(String username) {
 
-        return null;
+        QueryWrapper<Invoice>  qw = new QueryWrapper<>();
+        qw.like("username", username);
+
+
+        return invoiceMapper.selectList( qw );
     }
 }

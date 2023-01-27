@@ -8,12 +8,16 @@ import com.example.dao.InvoiceMapper;
 import com.example.domain.Invoice;
 import com.example.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
+import org.springframework.http.HttpRequest;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
@@ -21,12 +25,12 @@ import java.util.function.Consumer;
 @RestController
 @RequestMapping("/login")
 public class LoginController {
+
+
     @Autowired
     private InvoiceMapper invoiceMapper;
     @GetMapping
-    public RedirectView checkInfo(@PathParam( "username" ) String username, @PathParam("password") String password){
-
-        System.out.println(username );
+    public ModelAndView checkInfo(HttpServletRequest request, @PathParam( "username" ) String username, @PathParam("password") String password){
 
         System.out.println(invoiceMapper.selectList( null ) );
 
@@ -34,18 +38,27 @@ public class LoginController {
         wrapper.like( "username", username ).and( Consumer -> Consumer.like("password", password) );
 
         System.out.println(invoiceMapper.selectCount( wrapper ) );
+        HttpSession session = request.getSession( );
+        System.out.println(session );
+        session.setAttribute( "username", username );
 
-        if(invoiceMapper.selectCount( wrapper ) < 1) {
 
-            return new RedirectView( "Error.html");
+
+
+        if(invoiceMapper.selectCount( wrapper ) > 0) {
+
+            return new ModelAndView(  "Invoice.html");
+
 
         }else{
 
-            return new RedirectView(  "Invoice.html");
-        }
+            return new ModelAndView( "Error.html");
 
 
         }
+
+
+    }
 
 
 

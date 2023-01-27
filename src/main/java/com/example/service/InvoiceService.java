@@ -15,5 +15,5 @@ public interface InvoiceService {
 
     List<Invoice> getAll();
 
-    Boolean getByConditional(Invoice invoice);
+    List<Invoice> getByConditional(String username);
 }
