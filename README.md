@@ -12,9 +12,12 @@
 - html css js
 - Mysql
 - docker
+- redis: 
+- ```docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest```
+- RESTFUL style
 
 ## Third-party support
-- UI supports. Thanks for element.io
+- UI supports. Thanks for element.UI
 
 ## Aims
 ![image9](https://github.com/niuniu268/Springboot_assignment/blob/master/Images/Screenshot9.png)
@@ -41,3 +44,7 @@ The users also are able to change their previous records if they click the "upda
 ![image3](https://github.com/niuniu268/Springboot_assignment/blob/master/Images/Screenshot3.png)
 In the end, the users also can remove unnecessary data if they click the "delete" button.
 
+## Limitation
+
+Due to limited time, this is a draft. I am going to polish this project, and I am glad to increase a number
+of new features for example confirmations and messages when users delete or update their data. 
