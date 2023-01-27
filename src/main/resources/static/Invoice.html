@@ -26,30 +26,40 @@
     <el-button type="primary" plain @click="dialogVisible = true">Add</el-button>
 
   </el-row>
-  <!--添加数据对话框表单-->
+  <!--add dialog table-->
   <el-dialog
-          title="Edit Users"
+          title="Add Invoice"
           :visible.sync="dialogVisible"
           width="30%"
   >
 
-    <el-form ref="form" :model="user" label-width="80px">
-      <el-form-item label="User Name">
-        <el-input v-model="user.name"></el-input>
+    <el-form ref="form" :model="invoiceForm" label-width="80px">
+      <el-form-item label="name">
+        <el-input v-model="invoiceForm.username"></el-input>
       </el-form-item>
 
-      <el-form-item label="Password">
-        <el-input v-model="user.password"></el-input>
+      <el-form-item label="password">
+        <el-input v-model="invoiceForm.password"></el-input>
       </el-form-item>
 
-
-      <el-form-item label="Telephone No.">
-        <el-input v-model="user.tel"></el-input>
+      <el-form-item label="title">
+        <el-input v-model="invoiceForm.title"></el-input>
       </el-form-item>
-
+      <el-form-item label="date">
+        <el-input v-model="invoiceForm.date"></el-input>
+      </el-form-item>
+      <el-form-item label="description">
+        <el-input v-model="invoiceForm.beskrivning"></el-input>
+      </el-form-item>
+      <el-form-item label="category">
+        <el-input v-model="invoiceForm.category"></el-input>
+      </el-form-item>
+      <el-form-item label="price">
+        <el-input v-model="invoiceForm.pris"></el-input>
+      </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="adduser">Submit</el-button>
+        <el-button type="primary" @click="addInvoice">Submit</el-button>
         <el-button @click="dialogVisible = false">Cancel</el-button>
       </el-form-item>
     </el-form>
@@ -65,50 +75,64 @@
             :row-class-name="tableRowClassName"
             @selection-change="handleSelectionChange"
     >
-      <el-table-column
+<!--      <el-table-column
               type="selection"
               width="55">
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
               type="index"
               width="50">
       </el-table-column>
-
       <el-table-column
-              prop="name"
-              label="User Name"
+              prop="username"
+              label="username"
               align="center"
       >
       </el-table-column>
-
       <el-table-column
               prop="password"
-              label="User Password"
+              label="password"
               align="center"
       >
       </el-table-column>
 
       <el-table-column
-              prop="tel"
+              prop="title"
               align="center"
-              label="Telephone No.">
+              label="title">
+      </el-table-column>
+      <el-table-column
+              prop="date"
+              align="center"
+              label="date">
+      </el-table-column>
+      <el-table-column
+              prop="beskrivning"
+              align="center"
+              label="description">
+      </el-table-column>
+      <el-table-column
+              prop="category"
+              align="center"
+              label="category">
+      </el-table-column>
+      <el-table-column
+              prop="pris"
+              align="center"
+              label="price">
       </el-table-column>
 
       <el-table-column
               align="center"
               label="Operation">
 
-        <el-row>
-          <el-button type="primary">Update</el-button>
-          <el-button type="danger">Delete</el-button>
-        </el-row>
-
+          <template slot-scope = "scope">
+              <el-button type="primary" plain @click= "updateInvoice(scope.row)">Update</el-button>
+              <el-button type="danger" plain @click = "deleteInvoice(scope.row)">Delete</el-button>
+          </template>
       </el-table-column>
-
     </el-table>
   </template>
-
-
 </div>
 
 
@@ -121,82 +145,68 @@
   ELEMENT.locale(ELEMENT.lang.en)
 </script>
 
-
-
-
 <script>
 
-  new Vue({
-    el: "#app",
+  var vue = new Vue({
+      el: "#app",
 
-    mounted(){
-      var _this = this;
-
-      axios({
-        method:'get',
-        url:'http://localhost:9090/JavaWeb_war/demo2',
-      }).then(function (response) {
-        _this.tableData = response.data
-
-      })
-
-    },
-    methods: {
-
-      tableRowClassName({row, rowIndex}) {
-        if (rowIndex === 1) {
-          return 'warning-row';
-        } else if (rowIndex === 3) {
-          return 'success-row';
-        }
-        return '';
-      },
-      // 复选框选中后执行的方法
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-
-        console.log(this.multipleSelection)
+      data: {
+          tableData: [],
+          dialogVisible: false,
+          invoiceForm: {},
       },
 
-      // 添加数据
-      adduser(){
-        console.log(this.user);
+      created() {
+
+          this.getAll();
+
       },
 
+      methods: {
 
-    },
-    data() {
-      return {
-        // 当前页码
-        // currentPage: 1,
-        // 添加数据对话框是否展示的标记
-        dialogVisible: false,
+          tableRowClassName({row, rowIndex}) {
+              if (rowIndex === 1) {
+                  return 'warning-row';
+              } else if (rowIndex === 3) {
+                  return 'success-row';
+              }
+              return '';
+          },
+          // 复选框选中后执行的方法
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
 
-        // 品牌模型数据
-        user: {
-          id:'',
-          name: '',
-          password: '',
-          tel:'',
-        },
-        // 复选框选中数据集合
-        multipleSelection: [],
-        // 表格数据
-        tableData: [{
-          name: 'huawei',
-          password: 'huawei1234',
-          tel: "123456"
-        },{
-          name: 'huawei',
-          password: 'huawei1234',
-          tel: "123456"
-        },{
-          name: 'huawei',
-          password: 'huawei1234',
-          tel: "123456"
-        } ]
+              console.log(this.multipleSelection)
+          },
+
+
+          addInvoice() {
+              var _this = this;
+
+              axios.post("/invoices", _this.invoiceForm).then(function (response) {
+                  _this.dialogVisible = false;
+                  _this.getAll();
+              })
+
+
+          },
+
+          getAll() {
+              var _this = this;
+              axios.get("/invoices").then(function (response) {
+                  console.log(response.data);
+                  _this.tableData = response.data;
+              })
+          },
+
+          deleteInvoice(){
+
+          },
+
+          updateInvoice(){
+
+          }
       }
-    }
   })
 
 </script>

@@ -3,6 +3,7 @@ package com.example;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.dao.InvoiceMapper;
 import com.example.domain.Invoice;
+import com.example.service.InvoiceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,13 @@ class Demo2ApplicationTests {
 @Test
     void testDelete(){
         invoiceMapper.deleteById( 4 );
+    }
+    @Autowired
+    private InvoiceService invoiceService;
+@Test
+    void testServiceSelectall(){
+
+        System.out.println(invoiceService.getAll() );
     }
 
 }
