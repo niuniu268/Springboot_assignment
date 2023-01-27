@@ -37,6 +37,7 @@ public class InvoiceServiceimpl implements InvoiceService{
 
     @Override
     public Boolean getByConditional(Invoice invoice) {
+
         return null;
     }
 }
