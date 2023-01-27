@@ -9,6 +9,8 @@ import com.example.domain.Invoice;
 import com.example.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.cassandra.CassandraProperties;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpRequest;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -26,11 +28,13 @@ import java.util.function.Consumer;
 @RequestMapping("/login")
 public class LoginController {
 
-
     @Autowired
     private InvoiceMapper invoiceMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @GetMapping
-    public ModelAndView checkInfo(HttpServletRequest request, @PathParam( "username" ) String username, @PathParam("password") String password){
+    public ModelAndView checkInfo(@PathParam( "username" ) String username, @PathParam("password") String password){
 
         System.out.println(invoiceMapper.selectList( null ) );
 
@@ -38,11 +42,8 @@ public class LoginController {
         wrapper.like( "username", username ).and( Consumer -> Consumer.like("password", password) );
 
         System.out.println(invoiceMapper.selectCount( wrapper ) );
-        HttpSession session = request.getSession( );
-        System.out.println(session );
-        session.setAttribute( "username", username );
-
-
+        ValueOperations valueOperations = redisTemplate.opsForValue( );
+        valueOperations.set("username", username);
 
 
         if(invoiceMapper.selectCount( wrapper ) > 0) {
@@ -53,7 +54,6 @@ public class LoginController {
         }else{
 
             return new ModelAndView( "Error.html");
-
 
         }
 

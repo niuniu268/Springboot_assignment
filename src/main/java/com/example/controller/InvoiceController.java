@@ -3,6 +3,8 @@ package com.example.controller;
 import com.example.domain.Invoice;
 import com.example.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,19 +19,20 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
     @Autowired
-    HttpSession session;
+    private RedisTemplate redisTemplate;
+
+    @GetMapping
+    public List<Invoice> getByConditional(){
+    ValueOperations ops = redisTemplate.opsForValue( );
+
+    return invoiceService.getByConditional( ops.get("username").toString()  );
+
+    }
 
 /*@GetMapping
-    public List<Invoice> getByConditional(){
-        String username = (String) session.getAttribute( "username" );
-        return invoiceService.getByConditional( username  );
-
-    }*/
-
-@GetMapping
     public List<Invoice> getAll(){
         return invoiceService.getAll(  );
-    }
+    }*/
     @PostMapping
     public Boolean save(@RequestBody Invoice invoice){
         return invoiceService.save( invoice );
@@ -42,7 +45,6 @@ public class InvoiceController {
     public Boolean delete( @PathVariable Integer id){
         return invoiceService.delete( id );
     }
-
     @GetMapping("{id}")
     public Invoice getById( @PathVariable Integer id){
         return invoiceService.getById( id );
