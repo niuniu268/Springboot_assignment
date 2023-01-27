@@ -3,14 +3,16 @@ package com.example.domain;
 import lombok.Data;
 
 @Data
-public class Kvitton {
+public class Invoice {
 
-    private String userName;
+    private Integer id;
+
+    private String username;
     private String password;
 
     private String title;
 
-    private String data;
+    private String date;
 
     private String beskrivning;
 
